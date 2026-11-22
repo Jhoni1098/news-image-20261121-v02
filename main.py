@@ -55,9 +55,14 @@ def main():
     os.makedirs(out_dir, exist_ok=True)
     dst = os.path.join(out_dir, "entry.png")
     shutil.copyfile(src, dst)
-    if sha256(src) != sha256(dst):
+    if os.path.getsize(dst) != size:
+        fail("copied entry.png size %d differs from source %d"
+             % (os.path.getsize(dst), size))
+    src_hash = sha256(src)
+    if src_hash != sha256(dst):
         fail("copied entry.png differs from the repository image")
-    print("wrote %s (%d bytes, 1024x1024)" % (dst, size))
+    print("wrote %s (%d bytes, 1024x1024, sha256 %s)"
+          % (dst, size, src_hash))
 
 
 if __name__ == "__main__":
